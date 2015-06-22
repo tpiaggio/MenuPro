@@ -14,6 +14,14 @@ import javax.validation.constraints.NotNull;
  *
  * @author User
  */
+@NamedQueries({
+    @NamedQuery(name = "searchPlate",
+            query = "select p from Plate p where p.name = :name"
+    ),
+    @NamedQuery(name = "searchPlatesFromCategory",
+            query = "select p from Plate p where p.category = :category"
+    )
+})
 @Entity
 @Table(name = "Plates")
 public class Plate implements Serializable{

@@ -14,7 +14,21 @@ import javax.validation.constraints.NotNull;
  *
  * @author User
  */
+@NamedQueries({
+    @NamedQuery(name = "searchMenu",
+            query = "select m from Menu m where m.name = :name and m.owner = :owner"
+    ),
+    @NamedQuery(name = "searchMenus",
+            query = "select m from Menu m where m.owner = :owner"
+    ),
+    @NamedQuery(name = "searchUsersFromMenu",
+            query = "select users from Menu m join m.sharedUsers users where m.name = :name and m.owner = :owner"
+    )
+})
 @Entity
+@Table(name = "Menus", uniqueConstraints = {
+    @UniqueConstraint(columnNames = {"name", "owner"})
+})
 public class Menu implements Serializable{
     
     @Id
@@ -25,14 +39,15 @@ public class Menu implements Serializable{
     private String name;
     
     @NotNull
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "owner")
     private User owner;
     
     @NotNull
     @ManyToMany
     private List<Plate> plates; 
     
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     private List<User> sharedUsers;
 
     public Menu() {

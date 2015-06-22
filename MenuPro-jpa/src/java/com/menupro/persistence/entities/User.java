@@ -16,6 +16,14 @@ import javax.validation.constraints.NotNull;
  *
  * @author Pepe
  */
+@NamedQueries({
+    @NamedQuery(name = "searchUser",
+            query = "select u from User u where u.userName = :name"
+    ),
+    @NamedQuery(name = "searchContacts",
+            query = "select u.contacts from User u where u = :user"
+    )
+})
 @Entity
 @Table(name = "Users")
 public class User implements Serializable {
@@ -34,7 +42,12 @@ public class User implements Serializable {
     @NotNull
     private String password;
     
+    
     @ManyToMany()
+    @JoinTable(name = "Contacts",
+            joinColumns = @JoinColumn(name = "userId"),
+            inverseJoinColumns = @JoinColumn(name = "contactId")
+    )
     private List<User> contacts;
 
     public User() {

@@ -14,7 +14,16 @@ import javax.validation.constraints.*;
  *
  * @author User
  */
+@NamedQueries({
+    @NamedQuery(name = "searchOrdersFromBuyer",
+            query = "select o from Order o where o.buyer = :buyer"
+    ),
+    @NamedQuery(name = "searchUsersFromOrder",
+            query = "select users from Order o join o.sideBuyers users where o.id = :id"
+    )
+})
 @Entity
+@Table(name = "Orders")
 public class Order implements Serializable{
     
     @Id
@@ -22,28 +31,34 @@ public class Order implements Serializable{
     private Long id;
     
     @NotNull
+    @ManyToMany
     private List<Menu> menus;
     
     @NotNull
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "buyer")
     private User buyer;
     
     @NotNull
+    @Temporal(javax.persistence.TemporalType.DATE)
     private Date date;
     
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     private List<User> sideBuyers;
+    
+    private String comments;
 
     public Order() {
         sideBuyers=new ArrayList<User>();
         menus= new ArrayList<Menu>();
     }
 
-    public Order(Long id, List<Menu> menus, User buyer, Date date) {
+    public Order(Long id, List<Menu> menus, User buyer, Date date, String comments) {
         this.id = id;
         this.menus = menus;
         this.buyer = buyer;
         this.date = date;
+        this.comments = comments;
         sideBuyers=new ArrayList<User>();
     }
 
@@ -85,6 +100,14 @@ public class Order implements Serializable{
 
     public void setSideBuyers(List<User> sideBuyers) {
         this.sideBuyers = sideBuyers;
+    }
+
+    public String getComments() {
+        return comments;
+    }
+
+    public void setComments(String comments) {
+        this.comments = comments;
     }
 
     @Override
