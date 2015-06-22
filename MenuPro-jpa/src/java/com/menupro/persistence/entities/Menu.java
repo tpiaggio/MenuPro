@@ -44,7 +44,7 @@ public class Menu implements Serializable{
     private User owner;
     
     @NotNull
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     private List<Plate> plates; 
     
     @ManyToMany(fetch = FetchType.LAZY)
