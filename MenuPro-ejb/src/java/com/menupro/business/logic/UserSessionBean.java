@@ -7,6 +7,7 @@ package com.menupro.business.logic;
 
 import com.menupro.business.exceptions.*;
 import com.menupro.business.transformers.DtoToEntityTransformer;
+import com.menupro.business.transformers.EntityToDtoTransformer;
 import com.menupro.dtos.DTOUser;
 import com.menupro.persistence.beans.PersistenceSessionBeanLocal;
 import com.menupro.persistence.entities.Token;
@@ -31,6 +32,9 @@ public class UserSessionBean implements UserSessionBeanLocal {
     
     @EJB
     private DtoToEntityTransformer toEntity;
+    
+    @EJB
+    private EntityToDtoTransformer toDto;
     
     @Override
     public void addUser(DTOUser dtoUser) throws EntityAlreadyExistsException {
@@ -99,7 +103,7 @@ public class UserSessionBean implements UserSessionBeanLocal {
     @Override
     public DTOUser getUser(String userName) throws EntityDoesntExistsException {
         try {
-            DTOUser dtoUser = null;//toDto.convertUser(persistence.getUser(userName));
+            DTOUser dtoUser = toDto.convertUser(persistence.getUser(userName));
             return dtoUser;
         } catch (Exception e) {
             throw new EntityDoesntExistsException(e.getMessage());

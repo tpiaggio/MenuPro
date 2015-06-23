@@ -77,6 +77,9 @@ public class DTOPlate {
         this.price = price;
         this.category = category;
     }
+
+    public DTOPlate() {
+    }
     
     
 }
