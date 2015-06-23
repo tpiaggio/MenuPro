@@ -18,6 +18,18 @@ public interface UserSessionBeanLocal {
 
     void addUser(DTOUser dtoUser) throws EntityAlreadyExistsException;
     
-    void modifyUser(DTOUser dtoUser) throws EntityDoesntExistsException;
+    void editUser(DTOUser dtoUser) throws EntityDoesntExistsException;
+
+    void deleteUser(String userName) throws EntityDoesntExistsException;
+
+    void addContact(String userName, String contactName) throws EntityDoesntExistsException, EntityAlreadyExistsException;
+
+    DTOUser getUser(String userName) throws EntityDoesntExistsException;
+
+    String signIn(String userName, String password) throws EntityDoesntExistsException, InvalidDataException;
+
+    void signOut(String token) throws EntityDoesntExistsException;
+
+    boolean isLoggedIn(String token, String userName);
     
 }
