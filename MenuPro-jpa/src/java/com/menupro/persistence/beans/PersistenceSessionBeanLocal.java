@@ -75,4 +75,8 @@ public interface PersistenceSessionBeanLocal {
     void deleteToken(Token token);
 
     Token getToken(String token);
+
+    List<Plate> getPlatesFromMenu(Long id);
+
+    List<User> searchSharedUsersFromMenu(Long id);
 }

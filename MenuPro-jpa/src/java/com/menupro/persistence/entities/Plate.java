@@ -20,6 +20,10 @@ import javax.validation.constraints.NotNull;
     ),
     @NamedQuery(name = "searchPlatesFromCategory",
             query = "select p from Plate p where p.category = :category"
+    ),
+    @NamedQuery(name = "searchPlatesFromMenu",
+            query = "select m.plates from (select m from Menu m"
+                                    + "where m.id = :id) m"
     )
 })
 @Entity

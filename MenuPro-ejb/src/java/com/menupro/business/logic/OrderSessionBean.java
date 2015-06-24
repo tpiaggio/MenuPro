@@ -14,6 +14,5 @@ import javax.ejb.Stateless;
 @Stateless
 public class OrderSessionBean implements OrderSessionBeanLocal {
 
-    // Add business logic below. (Right-click in editor and choose
-    // "Insert Code > Add Business Method")
+    
 }

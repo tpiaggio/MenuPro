@@ -22,6 +22,10 @@ import javax.validation.constraints.NotNull;
     ),
     @NamedQuery(name = "searchContacts",
             query = "select u.contacts from User u where u = :user"
+    ),
+    @NamedQuery(name = "searchBuyersFromMenu",
+            query = "select m.sharedUsers from (select m "
+                    + "from Menu m where m.id = :id"
     )
 })
 @Entity

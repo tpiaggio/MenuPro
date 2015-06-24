@@ -100,6 +100,15 @@ public class PersistenceSessionBean implements PersistenceSessionBeanLocal {
         }
     }
 
+    @Override
+    public List<User> searchSharedUsersFromMenu(Long id) {
+        try {
+            return em.createNamedQuery("searchBuyersFromMenu", User.class)
+                    .setParameter("id", id).getResultList();
+        } catch (NoResultException e) {
+            return null;
+        }
+    }
     // </editor-fold>
     
     // <editor-fold defaultstate="collapsed" desc=" Plate ">
@@ -162,7 +171,7 @@ public class PersistenceSessionBean implements PersistenceSessionBeanLocal {
             return null;
         }
     }
-
+    
     @Override
     public List<Plate> getPlatesFromCategory(String category) {
         try {
@@ -173,6 +182,15 @@ public class PersistenceSessionBean implements PersistenceSessionBeanLocal {
         }
     }
     
+    @Override
+    public List<Plate> getPlatesFromMenu(Long id) {
+        try {
+            return em.createNamedQuery("searchPlatesFromMenu", Plate.class)
+                    .setParameter("id", id).getResultList();
+        } catch (NoResultException e) {
+            return null;
+        }      
+    }
     // </editor-fold>
     
     // <editor-fold defaultstate="collapsed" desc=" Menu ">
@@ -344,5 +362,9 @@ public class PersistenceSessionBean implements PersistenceSessionBeanLocal {
     }
     
     // </editor-fold>
+
+    
+
+   
     
 }

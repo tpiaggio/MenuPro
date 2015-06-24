@@ -13,6 +13,8 @@ import com.menupro.dtos.*;
 import com.menupro.persistence.beans.PersistenceSessionBeanLocal;
 import com.menupro.persistence.entities.Menu;
 import com.menupro.persistence.entities.Plate;
+import com.menupro.persistence.entities.User;
+import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityExistsException;
@@ -47,16 +49,22 @@ public class MenuSessionBean implements MenuSessionBeanLocal {
 
     @Override
     public void editMenu(DTOMenu dMenu) throws EntityDoesntExistsException {
-        Menu menu;
+        Menu m;
         try {
-            Menu m = toEntity.convertMenu(dMenu);
+            Menu menu = toEntity.convertMenu(dMenu);
             try {
-                menu = persistence.getMenu(m.getId());            
+                m = persistence.getMenu(menu.getId());
+                List<Plate> plates = persistence.getPlatesFromMenu(m.getId());
+                menu.setPlates(plates);
+                List<User> sharedUsers = persistence.searchSharedUsersFromMenu(m.getId());
+                menu.setSharedUsers(sharedUsers);
             } catch (Exception e) {
                 throw new EntityDoesntExistsException(e.getMessage());
-            }            
+            }
+            Long id = m.getId();
+            menu.setId(id);
             try {
-                persistence.editMenu(m);
+                persistence.editMenu(menu);
             } catch (Exception e) {
                 throw new EntityDoesntExistsException(e.getMessage());
             }
