@@ -56,7 +56,7 @@ public class MenuSessionBean implements MenuSessionBeanLocal {
                 m = persistence.getMenu(menu.getId());
                 List<Plate> plates = persistence.getPlatesFromMenu(m.getId());
                 menu.setPlates(plates);
-                List<User> sharedUsers = persistence.searchSharedUsersFromMenu(m.getId());
+                List<User> sharedUsers = persistence.getUsersFromMenu(m.getName(), m.getOwner());
                 menu.setSharedUsers(sharedUsers);
             } catch (Exception e) {
                 throw new EntityDoesntExistsException(e.getMessage());

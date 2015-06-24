@@ -41,12 +41,13 @@ public class EntityToDtoTransformer implements EntityToDtoTransformerLocal {
     
     @Override
     public DTOPlate convertPlate(Plate plate) {
-        DTOPlate dPlate = new DTOPlate();
+       /* DTOPlate dPlate = new DTOPlate();
         dPlate.setCategory(plate.getCategory());
         dPlate.setId(plate.getId());
         dPlate.setName(plate.getName());
         dPlate.setPrice(plate.getPrice());
-        return dPlate;
+        return dPlate;*/
+        return null;
     }
 
     @Override

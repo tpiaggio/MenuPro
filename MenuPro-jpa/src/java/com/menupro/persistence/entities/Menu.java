@@ -23,6 +23,9 @@ import javax.validation.constraints.NotNull;
     ),
     @NamedQuery(name = "searchUsersFromMenu",
             query = "select users from Menu m join m.sharedUsers users where m.name = :name and m.owner = :owner"
+    ),
+    @NamedQuery(name = "searchPlatesFromMenu",
+            query = "select plates from Menu m join m.plates plates where m.name = :name and m.owner = :owner"
     )
 })
 @Entity

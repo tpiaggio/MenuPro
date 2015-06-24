@@ -79,6 +79,7 @@ public class DTOPlate {
     }
 
     public DTOPlate() {
+        this.name="";
     }
     
     

@@ -6,8 +6,8 @@
 package com.menupro.business.logic;
 
 import com.menupro.business.exceptions.*;
-import com.menupro.business.transformers.DtoToEntityTransformer;
-import com.menupro.business.transformers.EntityToDtoTransformer;
+import com.menupro.business.transformers.DtoToEntityTransformerLocal;
+import com.menupro.business.transformers.EntityToDtoTransformerLocal;
 import com.menupro.dtos.DTOUser;
 import com.menupro.persistence.beans.PersistenceSessionBeanLocal;
 import com.menupro.persistence.entities.Token;
@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.UUID;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.inject.Named;
 import javax.persistence.EntityExistsException;
 
 /**
@@ -23,6 +24,7 @@ import javax.persistence.EntityExistsException;
  * @author Pepe
  */
 @Stateless
+@Named
 public class UserSessionBean implements UserSessionBeanLocal {
 
     // Add business logic below. (Right-click in editor and choose
@@ -31,10 +33,10 @@ public class UserSessionBean implements UserSessionBeanLocal {
     private PersistenceSessionBeanLocal persistence;
     
     @EJB
-    private DtoToEntityTransformer toEntity;
+    private DtoToEntityTransformerLocal toEntity;
     
     @EJB
-    private EntityToDtoTransformer toDto;
+    private EntityToDtoTransformerLocal toDto;
     
     @Override
     public void addUser(DTOUser dtoUser) throws EntityAlreadyExistsException {

@@ -100,15 +100,6 @@ public class PersistenceSessionBean implements PersistenceSessionBeanLocal {
         }
     }
 
-    @Override
-    public List<User> searchSharedUsersFromMenu(Long id) {
-        try {
-            return em.createNamedQuery("searchBuyersFromMenu", User.class)
-                    .setParameter("id", id).getResultList();
-        } catch (NoResultException e) {
-            return null;
-        }
-    }
     // </editor-fold>
     
     // <editor-fold defaultstate="collapsed" desc=" Plate ">
@@ -191,6 +182,7 @@ public class PersistenceSessionBean implements PersistenceSessionBeanLocal {
             return null;
         }      
     }
+    
     // </editor-fold>
     
     // <editor-fold defaultstate="collapsed" desc=" Menu ">

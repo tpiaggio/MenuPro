@@ -5,17 +5,19 @@
  */
 package com.menupro.services.rest;
 
-import com.menupro.business.exceptions.EntityDoesntExistsException;
 import com.menupro.business.logic.UserSessionBeanLocal;
 import com.menupro.dtos.DTOUser;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.faces.bean.RequestScoped;
+import javax.inject.Inject;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -28,12 +30,13 @@ import javax.ws.rs.QueryParam;
  * @author Pepe
  */
 @Path("users")
-@Stateless
-public class UsersResource {
+@RequestScoped
+public class UsersResource{
 
     @Context
     private UriInfo context;
     
+    //@Inject
     @EJB
     UserSessionBeanLocal users;
 
@@ -41,6 +44,19 @@ public class UsersResource {
      * Creates a new instance of UsersResource
      */
     public UsersResource() {
+        /*
+        try {
+            String lookupName = "java:global/MenuPro/MenuPro-ejb/com.menupro.business.logic.UserSessionBean";
+            users = (UserSessionBean) InitialContext.doLookup(lookupName);
+        } catch (NamingException e) {
+            e.printStackTrace();
+        }
+        final String jndi = "java:app/MenuPro-ejb/UserSessionBean!com.menupro.business.logic.UserSessionBeanLocal";
+        try {
+            users = (UserSessionBeanLocal) new InitialContext().lookup(jndi);
+        } catch (NamingException ex) {
+            Logger.getLogger(UsersResource.class.getName()).log(Level.SEVERE, null, ex);
+        }*/
     }
 
     /**
@@ -59,7 +75,7 @@ public class UsersResource {
      * @param user the DTOUser that is going to be added
      * @return token returned by signing in with the new account, error otherwise
      */
-    @PUT
+    @POST
     @Path("/addUser")
     @Consumes("application/json")
     public String addUser(DTOUser user) {
@@ -83,6 +99,7 @@ public class UsersResource {
     @Path("/editUser")
     @Consumes("application/json")
     public String editUser(DTOUser user, @QueryParam("token") String token) {
+        System.out.println(user.getUserName() + " " + token);
        if (users.isLoggedIn(token, user.getUserName())) {
             try {
                 users.editUser(user);
@@ -126,7 +143,8 @@ public class UsersResource {
      */
     @POST
     @Path("/addContact")
-    public String addContact(@QueryParam("user") String user, @QueryParam("contact") String contact, @QueryParam("token") String token) {
+    @Consumes("application/x-www-form-urlencoded")
+    public String addContact(@FormParam("user") String user, @FormParam("contact") String contact, @FormParam("token") String token) {
         if (users.isLoggedIn(token, user)) {
             try {
                 users.addContact(user, contact);
@@ -153,7 +171,7 @@ public class UsersResource {
             return users.getUser(userName);
         } catch (Exception e) {
             e.printStackTrace();
-            return new DTOUser(new Long(1111), "prueba", "nombreprueba", "passwordprueba");
+            return new DTOUser();
         }
     }
     
@@ -163,9 +181,12 @@ public class UsersResource {
      * @param user username of user trying to sign in
      * @return if success, return token. Otherwise returns error message
      */
-    @PUT
+    
+    @POST
     @Path("/signin")
-    public String signin(@QueryParam("password") String password, @QueryParam("user") String user) {
+    @Consumes("application/x-www-form-urlencoded")
+    public String signin(@FormParam("password") String password, @FormParam("user") String user) {
+        System.out.println(password+" y "+user);
         try {
             String token = users.signIn(user, password);
             if (token.equals("")) {
@@ -173,9 +194,26 @@ public class UsersResource {
             }
             return token;
         } catch (Exception e) {
+            e.printStackTrace();
             return e.getMessage();
         }
     }
+    /*
+    @POST
+    @Path("/signin")
+    public String signin(@QueryParam("password") String password, @QueryParam("user") String user) {
+        System.out.println(password+" y "+user);
+        try {
+            String token = users.signIn(user, password);
+            if (token.equals("")) {
+                token = "The username and password you entered don't match.";
+            }
+            return token;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return e.getMessage();
+        }
+    }*/
     
     /**
      * Sign out the user

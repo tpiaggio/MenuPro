@@ -19,7 +19,7 @@ import javax.validation.constraints.*;
             query = "select o from Order o where o.buyer = :buyer"
     ),
     @NamedQuery(name = "searchMenusFromOrder",
-            query = "select o.menus from Order o where o.id = :id"
+            query = "select menus from Order o join o.menus menus where o.id = :id"
     ),
     @NamedQuery(name = "searchUsersFromOrder",
             query = "select users from Order o join o.sideBuyers users where o.id = :id"
