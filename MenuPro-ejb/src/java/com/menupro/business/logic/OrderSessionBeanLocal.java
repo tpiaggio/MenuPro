@@ -5,6 +5,9 @@
  */
 package com.menupro.business.logic;
 
+import com.menupro.business.exceptions.EntityAlreadyExistsException;
+import com.menupro.business.exceptions.EntityDoesntExistsException;
+import com.menupro.dtos.DTOOrder;
 import javax.ejb.Local;
 
 /**
@@ -13,5 +16,13 @@ import javax.ejb.Local;
  */
 @Local
 public interface OrderSessionBeanLocal {
+
+    void addOrder(DTOOrder dOrder) throws EntityAlreadyExistsException;
+
+    void editOrder(DTOOrder dOrder) throws EntityDoesntExistsException;
+
+    void deleteOrder(Long id) throws EntityDoesntExistsException;
+
+    DTOOrder getOrder(Long id) throws EntityDoesntExistsException;
     
 }

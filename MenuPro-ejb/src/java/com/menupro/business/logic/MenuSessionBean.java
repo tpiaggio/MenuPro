@@ -26,7 +26,7 @@ import javax.persistence.EntityExistsException;
 @Stateless
 public class MenuSessionBean implements MenuSessionBeanLocal {
 
-     @EJB
+    @EJB
     private PersistenceSessionBeanLocal persistence;
     
     @EJB

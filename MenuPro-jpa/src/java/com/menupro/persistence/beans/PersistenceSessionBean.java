@@ -267,6 +267,17 @@ public class PersistenceSessionBean implements PersistenceSessionBeanLocal {
         }
     }
     
+    @Override
+    public List<Menu> searchMenusFromOrder(Long id) {
+        try {
+            return em.createNamedQuery("searchMenusFromOrder", Menu.class)
+                    .setParameter("id", id)
+                    .getResultList();
+        } catch (NoResultException e) {
+            return null;
+        }
+    }
+    
     // </editor-fold>
     
     // <editor-fold defaultstate="collapsed" desc=" Order ">
@@ -362,6 +373,8 @@ public class PersistenceSessionBean implements PersistenceSessionBeanLocal {
     }
     
     // </editor-fold>
+
+    
 
     
 

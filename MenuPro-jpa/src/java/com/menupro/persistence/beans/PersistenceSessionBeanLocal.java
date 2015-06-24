@@ -79,4 +79,6 @@ public interface PersistenceSessionBeanLocal {
     List<Plate> getPlatesFromMenu(Long id);
 
     List<User> searchSharedUsersFromMenu(Long id);
+
+    List<Menu> searchMenusFromOrder(Long id);
 }
