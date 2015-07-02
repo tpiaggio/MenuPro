@@ -33,7 +33,7 @@ public class Order implements Serializable{
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     
-    @NotNull
+    
     @ManyToMany
     private List<Menu> menus;
     
@@ -42,7 +42,7 @@ public class Order implements Serializable{
     @JoinColumn(name = "buyer")
     private User buyer;
     
-    @NotNull
+    
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date date;
     

@@ -16,16 +16,16 @@ import javax.validation.constraints.NotNull;
  */
 @NamedQueries({
     @NamedQuery(name = "searchMenu",
-            query = "select m from Menu m where m.name = :name and m.owner = :owner"
+            query = "select m from Menu m where m.name = :name and m.owner.userName = :owner"
     ),
     @NamedQuery(name = "searchMenus",
-            query = "select m from Menu m where m.owner = :owner"
+            query = "select m from Menu m where m.owner.userName = :owner"
     ),
     @NamedQuery(name = "searchUsersFromMenu",
-            query = "select users from Menu m join m.sharedUsers users where m.name = :name and m.owner = :owner"
+            query = "select users from Menu m join m.sharedUsers users where m.name = :name and m.owner.userName = :owner"
     ),
     @NamedQuery(name = "searchPlatesFromMenu",
-            query = "select plates from Menu m join m.plates plates where m.name = :name and m.owner = :owner"
+            query = "select plates from Menu m join m.plates plates where m.name = :name and m.owner.userName = :owner"
     )
 })
 @Entity
@@ -42,7 +42,7 @@ public class Menu implements Serializable{
     private String name;
     
     @NotNull
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)//, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "owner")
     private User owner;
     

@@ -41,13 +41,12 @@ public class EntityToDtoTransformer implements EntityToDtoTransformerLocal {
     
     @Override
     public DTOPlate convertPlate(Plate plate) {
-       /* DTOPlate dPlate = new DTOPlate();
+        DTOPlate dPlate = new DTOPlate();
         dPlate.setCategory(plate.getCategory());
         dPlate.setId(plate.getId());
         dPlate.setName(plate.getName());
         dPlate.setPrice(plate.getPrice());
-        return dPlate;*/
-        return null;
+        return dPlate;
     }
 
     @Override
@@ -72,7 +71,7 @@ public class EntityToDtoTransformer implements EntityToDtoTransformerLocal {
         DTOOrder dOrder = new DTOOrder();
         dOrder.setComments(order.getComments());
         dOrder.setDate(order.getDate());
-        dOrder.setId(order.getId());
+        dOrder.setCode(order.getId());
         DTOUser newUser = this.convertNormalUser(order.getBuyer());
         dOrder.setBuyer(newUser);
         for(User u : order.getSideBuyers()){

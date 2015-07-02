@@ -7,6 +7,7 @@ package com.menupro.business.logic;
 import com.menupro.business.exceptions.EntityAlreadyExistsException;
 import com.menupro.business.exceptions.EntityDoesntExistsException;
 import com.menupro.dtos.DTOPlate;
+import java.util.List;
 import javax.ejb.Local;
 
 /**
@@ -20,9 +21,11 @@ public interface PlateSessionBeanLocal {
 
     void editPlate(DTOPlate dPlate) throws EntityDoesntExistsException;
 
-    void deletePlate(Long id) throws EntityDoesntExistsException;
+    void deletePlate(String name) throws EntityDoesntExistsException;
 
-    DTOPlate getPlate(Long id) throws EntityDoesntExistsException;
+    DTOPlate getPlate(String name) throws EntityDoesntExistsException;
 
+    List<DTOPlate> getPlates();
     
+    List<DTOPlate> getPlatesFromCategory(String category);
 }

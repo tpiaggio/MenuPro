@@ -43,10 +43,10 @@ public class User implements Serializable {
     private String password;
     
     
-    @ManyToMany()
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "Contacts",
-            joinColumns = @JoinColumn(name = "userId"),
-            inverseJoinColumns = @JoinColumn(name = "contactId")
+           joinColumns = @JoinColumn(name = "userId"),
+           inverseJoinColumns = @JoinColumn(name = "contactId")
     )
     private List<User> contacts;
 

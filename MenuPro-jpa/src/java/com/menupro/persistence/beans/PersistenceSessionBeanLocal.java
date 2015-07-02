@@ -29,6 +29,8 @@ public interface PersistenceSessionBeanLocal {
     User getUser(String userName);
 
     List<User> searchContacts(User user);
+    
+    List<User> getUsers();
 
     void addPlate(Plate plate);
 
@@ -58,6 +60,10 @@ public interface PersistenceSessionBeanLocal {
 
     List<User> getUsersFromMenu(String name, User owner);
     
+    List<Menu> getMenusFromUser(User owner);
+    
+    List<Plate> getPlatesFromMenu(User owner, String menuName);
+    
     void addOrder(Order order);
 
     void editOrder(Order order);
@@ -65,18 +71,16 @@ public interface PersistenceSessionBeanLocal {
     void deleteOrder(Order order);
     
     Order getOrder(Long id);
-    
-    List<Order> getOrders(User buyer);
 
     List<User> getUsersFromOrder(Long id);
+    
+    List<Order> getOrdersFromUser(User buyer);
 
     void addToken(Token token);
 
     void deleteToken(Token token);
 
     Token getToken(String token);
-
-    List<Plate> getPlatesFromMenu(Long id);
 
     List<Menu> searchMenusFromOrder(Long id);
 }

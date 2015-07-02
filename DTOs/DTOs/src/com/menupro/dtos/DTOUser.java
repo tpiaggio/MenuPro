@@ -21,7 +21,29 @@ public class DTOUser {
     private String name;
     private String password;
     private List<DTOUser> contacts;
+    private String token;
 
+    public DTOUser() {
+        this.contacts=new ArrayList<DTOUser>();
+    }
+
+    public DTOUser(Long id, String userName, String name, String password) {
+        this.id = id;
+        this.userName = userName;
+        this.name = name;
+        this.password = password;
+        this.contacts=new ArrayList<DTOUser>();
+    }
+
+    public DTOUser(Long id, String userName, String name, String password, List<DTOUser> contacts, String token) {
+        this.id = id;
+        this.userName = userName;
+        this.name = name;
+        this.password = password;
+        this.contacts = contacts;
+        this.token = token;
+    }
+    
     public Long getId() {
         return id;
     }
@@ -62,17 +84,15 @@ public class DTOUser {
         this.contacts = contacts;
     }
 
-    public DTOUser() {
-        this.contacts=new ArrayList<DTOUser>();
+    public String getToken() {
+        return token;
     }
 
-    public DTOUser(Long id, String userName, String name, String password) {
-        this.id = id;
-        this.userName = userName;
-        this.name = name;
-        this.password = password;
-        this.contacts=new ArrayList<DTOUser>();
+    public void setToken(String token) {
+        this.token = token;
     }
+
+    
 
     @Override
     public int hashCode() {

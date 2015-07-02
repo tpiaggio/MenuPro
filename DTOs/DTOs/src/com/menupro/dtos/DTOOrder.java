@@ -12,12 +12,13 @@ import java.util.*;
  * @author User
  */
 public class DTOOrder {
-    private Long id;
+    private Long code;
     private List<DTOMenu> menus;
     private DTOUser buyer;
     private Date date;
     private List<DTOUser> sideBuyers;
     private String comments;
+    private String token;
     
     public DTOOrder() {
         sideBuyers = new ArrayList<DTOUser>();
@@ -25,7 +26,7 @@ public class DTOOrder {
     }
 
     public DTOOrder(Long id, List<DTOMenu> menus, DTOUser buyer, Date date, List<DTOUser> sideBuyers, String comments) {
-        this.id = id;
+        this.code = id;
         this.menus = menus;
         this.buyer = buyer;
         this.date = date;
@@ -33,12 +34,24 @@ public class DTOOrder {
         this.comments = comments;
     }
 
-    public Long getId() {
-        return id;
+    public DTOOrder(Long id, List<DTOMenu> menus, DTOUser buyer, Date date, List<DTOUser> sideBuyers, String comments, String token) {
+        this.code = id;
+        this.menus = menus;
+        this.buyer = buyer;
+        this.date = date;
+        this.sideBuyers = sideBuyers;
+        this.comments = comments;
+        this.token = token;
+    }
+    
+    
+
+    public Long getCode() {
+        return code;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setCode(Long code) {
+        this.code = code;
     }
 
     public List<DTOMenu> getMenus() {
@@ -80,11 +93,19 @@ public class DTOOrder {
     public void setComments(String comments) {
         this.comments = comments;
     }
+    
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
 
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 73 * hash + Objects.hashCode(this.id);
+        hash = 73 * hash + Objects.hashCode(this.code);
         return hash;
     }
 
@@ -97,7 +118,7 @@ public class DTOOrder {
             return false;
         }
         final DTOOrder other = (DTOOrder) obj;
-        if (!Objects.equals(this.id, other.id)) {
+        if (!Objects.equals(this.code, other.code)) {
             return false;
         }
         return true;

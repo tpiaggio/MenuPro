@@ -68,6 +68,7 @@ public class PersistenceSessionBean implements PersistenceSessionBeanLocal {
     public void deleteUser(User user) {
         if (user.getId() != null) {
             user = em.merge(user);
+            em.flush();
             deleteTokens(user);
             em.remove(user);
         } else {
@@ -95,6 +96,15 @@ public class PersistenceSessionBean implements PersistenceSessionBeanLocal {
         try {
             return em.createNamedQuery("searchContacts", User.class)
                     .setParameter("user", user).getResultList();
+        } catch (NoResultException e) {
+            return null;
+        }
+    }
+    
+    @Override
+    public List<User> getUsers() {
+        try {
+            return em.createQuery("SELECT u from User u", User.class).getResultList();
         } catch (NoResultException e) {
             return null;
         }
@@ -173,15 +183,6 @@ public class PersistenceSessionBean implements PersistenceSessionBeanLocal {
         }
     }
     
-    @Override
-    public List<Plate> getPlatesFromMenu(Long id) {
-        try {
-            return em.createNamedQuery("searchPlatesFromMenu", Plate.class)
-                    .setParameter("id", id).getResultList();
-        } catch (NoResultException e) {
-            return null;
-        }      
-    }
     
     // </editor-fold>
     
@@ -207,9 +208,10 @@ public class PersistenceSessionBean implements PersistenceSessionBeanLocal {
                 em.persist(menu);
             }
         } catch (PersistenceException e) {
-            throw new EntityNotFoundException("The menu "+menu.getName() + " was not found.");
+            throw new EntityNotFoundException("The menu "+menu.getName() + " (" + menu.getId() +") was not found.");
         } catch (Exception e) {
-            throw new EntityNotFoundException("An error occurred, please try again later.");
+            e.printStackTrace();
+            throw new EntityNotFoundException(e.getMessage());
         }
     }
 
@@ -218,7 +220,7 @@ public class PersistenceSessionBean implements PersistenceSessionBeanLocal {
         if (menu.getId() != null) {
             em.remove(menu);
         } else {
-            throw new EntityNotFoundException("The menu "+menu.getName() + " was not found.");
+            throw new EntityNotFoundException("The menu "+menu.getName() + " (" + menu.getId() +") was not found.");
         }
     }
 
@@ -231,7 +233,7 @@ public class PersistenceSessionBean implements PersistenceSessionBeanLocal {
     public Menu getMenu(String name, User owner) {
         try {
             return (Menu) em.createNamedQuery("searchMenu")
-                    .setParameter("name", name).setParameter("owner", owner)
+                    .setParameter("name", name).setParameter("owner", owner.getUserName())
                     .getSingleResult();
         } catch (NoResultException e) {
             throw new EntityNotFoundException("The menu "+ name + " was not found.");
@@ -242,17 +244,28 @@ public class PersistenceSessionBean implements PersistenceSessionBeanLocal {
     public List<Menu> getMenus(User owner) {
         try {
             return em.createNamedQuery("searchMenus", Menu.class)
-                    .setParameter("owner", owner).getResultList();
+                    .setParameter("owner", owner.getUserName()).getResultList();
         } catch (NoResultException e) {
             return null;
         }
     }
     
     @Override
+    public List<Menu> getMenusFromUser(User owner){
+        try {
+            return em.createNamedQuery("searchMenus")
+                    .setParameter("owner", owner.getUserName())
+                    .getResultList();
+        } catch (NoResultException e) {
+            throw new EntityNotFoundException("The user "+ owner.getUserName() + " was not found.");
+        }       
+    }
+    
+    @Override
     public List<User> getUsersFromMenu(String name, User owner) {
         try {
             return em.createNamedQuery("searchUsersFromMenu", User.class)
-                    .setParameter("name", name).setParameter("owner", owner)
+                    .setParameter("name", name).setParameter("owner", owner.getUserName())
                     .getResultList();
         } catch (NoResultException e) {
             return null;
@@ -270,6 +283,16 @@ public class PersistenceSessionBean implements PersistenceSessionBeanLocal {
         }
     }
     
+    @Override
+    public List<Plate> getPlatesFromMenu(User owner, String menuName) {
+        try {
+            return em.createNamedQuery("searchPlatesFromMenu", Plate.class)
+                    .setParameter("name", menuName).setParameter("owner", owner.getUserName()).getResultList();
+        } catch (NoResultException e) {
+            return null;
+        }  
+    }
+    
     // </editor-fold>
     
     // <editor-fold defaultstate="collapsed" desc=" Order ">
@@ -279,6 +302,7 @@ public class PersistenceSessionBean implements PersistenceSessionBeanLocal {
         try {
             em.persist(order);
         } catch (Exception e) {
+            e.printStackTrace();
             throw new EntityExistsException("An error occurred, please try again later.", e);
         }
     }
@@ -312,15 +336,6 @@ public class PersistenceSessionBean implements PersistenceSessionBeanLocal {
         return em.find(Order.class, id);
     }
 
-    @Override
-    public List<Order> getOrders(User buyer) {
-        try {
-            return em.createNamedQuery("searchOrdersFromBuyer", Order.class)
-                    .setParameter("buyer", buyer).getResultList();
-        } catch (NoResultException e) {
-            return null;
-        }
-    }
 
     @Override
     public List<User> getUsersFromOrder(Long id) {
@@ -329,6 +344,16 @@ public class PersistenceSessionBean implements PersistenceSessionBeanLocal {
                     .setParameter("id", id).getResultList();
         } catch (NoResultException e) {
             return null;
+        }
+    }
+    
+    @Override
+    public List<Order> getOrdersFromUser(User buyer) {
+        try {
+            return em.createNamedQuery("searchOrdersFromBuyer", Order.class)
+                    .setParameter("buyer", buyer).getResultList();
+        } catch (NoResultException e) {
+            throw new EntityNotFoundException("The user was not found");
         }
     }
     
@@ -365,6 +390,10 @@ public class PersistenceSessionBean implements PersistenceSessionBeanLocal {
     }
     
     // </editor-fold>
+
+    
+
+    
 
     
 

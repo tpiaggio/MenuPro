@@ -16,6 +16,27 @@ public class DTOPlate {
     private String name;
     private double price;
     private String category;
+    private String token;
+    
+    public DTOPlate() {
+    }
+    
+    public DTOPlate(Long id, String name, double price, String category) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+        this.category = category;
+    }
+
+    public DTOPlate(Long id, String name, double price, String category, String token) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+        this.category = category;
+        this.token = token;
+    }
+    
+    
 
     public Long getId() {
         return id;
@@ -49,6 +70,16 @@ public class DTOPlate {
         this.category = category;
     }
 
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    
+    
     @Override
     public int hashCode() {
         int hash = 3;
@@ -71,16 +102,9 @@ public class DTOPlate {
         return true;
     }
 
-    public DTOPlate(Long id, String name, double price, String category) {
-        this.id = id;
-        this.name = name;
-        this.price = price;
-        this.category = category;
-    }
+    
 
-    public DTOPlate() {
-        this.name="";
-    }
+    
     
     
 }

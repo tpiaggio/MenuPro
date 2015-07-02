@@ -7,6 +7,7 @@ package com.menupro.business.logic;
 
 import com.menupro.business.exceptions.*;
 import com.menupro.dtos.DTOUser;
+import java.util.List;
 import javax.ejb.Local;
 
 /**
@@ -31,5 +32,7 @@ public interface UserSessionBeanLocal {
     void signOut(String token) throws EntityDoesntExistsException;
 
     boolean isLoggedIn(String token, String userName);
+    
+    List<DTOUser> getUsers();
     
 }

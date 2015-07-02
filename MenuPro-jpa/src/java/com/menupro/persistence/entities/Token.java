@@ -18,7 +18,7 @@ import javax.persistence.*;
     query="select t from Token t where t.token = :token"
     ),
     @NamedQuery(name="searchTokensFromUser",
-    query="select t from Token t where t.user = :userId"
+    query="select t from Token t where t.user.id = :userId"
     )
 })
 @Entity

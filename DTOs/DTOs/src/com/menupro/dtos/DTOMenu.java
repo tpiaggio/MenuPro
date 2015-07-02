@@ -14,18 +14,40 @@ import java.util.Objects;
  * @author User
  */
 public class DTOMenu {
-    private Long id;
+    private Long code;
     private String name;
     private DTOUser owner;
     private List<DTOPlate> plates;
     private List<DTOUser> sharedUsers;
+    private String token;
+    
+    public DTOMenu() {
+        this.plates = new ArrayList<DTOPlate>();
+        this.sharedUsers = new ArrayList<DTOUser>();
+    }
+    
+    public DTOMenu(Long id, String name, DTOUser owner, List<DTOPlate> plates) {
+        this.code = id;
+        this.name = name;
+        this.owner = owner;
+        this.plates = plates;
+        this.sharedUsers = new ArrayList<DTOUser>();
+    }
 
+    public DTOMenu(Long id, String name, DTOUser owner, List<DTOUser> sharedUsers, String token) {
+        this.code = id;
+        this.name = name;
+        this.owner = owner;
+        this.sharedUsers = sharedUsers;
+        this.token = token;
+    }
+    
     public Long getId() {
-        return id;
+        return code;
     }
 
     public void setId(Long id) {
-        this.id = id;
+        this.code = id;
     }
 
     public String getName() {
@@ -60,23 +82,18 @@ public class DTOMenu {
         this.sharedUsers = sharedUsers;
     }
 
-    public DTOMenu(Long id, String name, DTOUser owner, List<DTOPlate> plates) {
-        this.id = id;
-        this.name = name;
-        this.owner = owner;
-        this.plates = plates;
-        this.sharedUsers = new ArrayList<DTOUser>();
+    public String getToken() {
+        return token;
     }
 
-    public DTOMenu() {
-        this.plates = new ArrayList<DTOPlate>();
-        this.sharedUsers = new ArrayList<DTOUser>();
+    public void setToken(String token) {
+        this.token = token;
     }
 
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 97 * hash + Objects.hashCode(this.id);
+        hash = 97 * hash + Objects.hashCode(this.code);
         return hash;
     }
 
@@ -89,7 +106,7 @@ public class DTOMenu {
             return false;
         }
         final DTOMenu other = (DTOMenu) obj;
-        if (!Objects.equals(this.id, other.id)) {
+        if (!Objects.equals(this.code, other.code)) {
             return false;
         }
         return true;

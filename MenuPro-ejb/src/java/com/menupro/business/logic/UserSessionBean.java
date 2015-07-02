@@ -12,6 +12,7 @@ import com.menupro.dtos.DTOUser;
 import com.menupro.persistence.beans.PersistenceSessionBeanLocal;
 import com.menupro.persistence.entities.Token;
 import com.menupro.persistence.entities.User;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import javax.ejb.EJB;
@@ -44,7 +45,7 @@ public class UserSessionBean implements UserSessionBeanLocal {
             User user = toEntity.convertUser(dtoUser);
             persistence.addUser(user);
         } catch (EntityExistsException e) {
-            throw new EntityAlreadyExistsException(e.getMessage());
+            throw new EntityAlreadyExistsException("The username " + dtoUser.getUserName() + " already exists.");
         }catch (Exception e) {
             throw new EntityAlreadyExistsException("An unexpected error occurred, please try again later.");
         }
@@ -60,14 +61,14 @@ public class UserSessionBean implements UserSessionBeanLocal {
                 List<User> contacts = persistence.searchContacts(u);
                 user.setContacts(contacts);
             } catch (Exception e) {
-                throw new EntityDoesntExistsException(e.getMessage());
+                throw new EntityDoesntExistsException("The user "+user.getUserName() + " was not found.");
             }
             Long id = u.getId();
             user.setId(id);
             try {
                 persistence.editUser(user);
             } catch (Exception e) {
-                throw new EntityDoesntExistsException(e.getMessage());
+                throw new EntityDoesntExistsException("The user "+user.getUserName() + " was not found.");
             }
         } catch (Exception e) {
             throw new EntityDoesntExistsException("An unexpected error occurred, please try again later.");
@@ -78,9 +79,16 @@ public class UserSessionBean implements UserSessionBeanLocal {
     public void deleteUser(String userName) throws EntityDoesntExistsException {
         try {
             User user = persistence.getUser(userName);
+            List<User> contacts = persistence.searchContacts(user);
+            for(User contact : contacts){
+                contact.getContacts().remove(user);
+                persistence.editUser(contact);
+            }
+            user.getContacts().clear();
+            user.setContacts(null);
             persistence.deleteUser(user);
         } catch (Exception e) {
-            throw new EntityDoesntExistsException(e.getMessage());
+            throw new EntityDoesntExistsException("The user "+userName + " was not found.");
         }
     }
 
@@ -96,9 +104,11 @@ public class UserSessionBean implements UserSessionBeanLocal {
                 throw new EntityAlreadyExistsException("The user "+contactName+" already belongs to your contacts");
             }
             user.getContacts().add(contact);
+            contact.getContacts().add(user);
             persistence.editUser(user);
+            persistence.editUser(contact);
         } catch (Exception e) {
-            throw new EntityDoesntExistsException(e.getMessage());
+            throw new EntityDoesntExistsException("The user "+userName + " was not found.");
         }
     }
 
@@ -108,7 +118,7 @@ public class UserSessionBean implements UserSessionBeanLocal {
             DTOUser dtoUser = toDto.convertUser(persistence.getUser(userName));
             return dtoUser;
         } catch (Exception e) {
-            throw new EntityDoesntExistsException(e.getMessage());
+            throw new EntityDoesntExistsException("The user "+userName + " was not found.");
         }
     }
 
@@ -129,7 +139,7 @@ public class UserSessionBean implements UserSessionBeanLocal {
             }
             return token;
         } catch (Exception e) {
-            throw new EntityDoesntExistsException(e.getMessage());
+            throw new EntityDoesntExistsException("The user "+userName + " was not found.");
         }
     }
 
@@ -151,6 +161,15 @@ public class UserSessionBean implements UserSessionBeanLocal {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    @Override
+    public List<DTOUser> getUsers() {
+        List<DTOUser> users = new ArrayList<DTOUser>();
+        for(User u : persistence.getUsers()){
+            users.add(toDto.convertUser(u));
+        }
+        return users;
     }
     
     

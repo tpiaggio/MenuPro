@@ -5,12 +5,12 @@
  */
 package com.menupro.services.rest;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.menupro.business.logic.UserSessionBeanLocal;
 import com.menupro.dtos.DTOUser;
 import javax.ejb.EJB;
-import javax.ejb.Stateless;
 import javax.faces.bean.RequestScoped;
-import javax.inject.Inject;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.PathParam;
@@ -21,8 +21,8 @@ import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PUT;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Response;
 
 /**
  * REST Web Service
@@ -44,25 +44,9 @@ public class UsersResource{
      * Creates a new instance of UsersResource
      */
     public UsersResource() {
-        /*
-        try {
-            String lookupName = "java:global/MenuPro/MenuPro-ejb/com.menupro.business.logic.UserSessionBean";
-            users = (UserSessionBean) InitialContext.doLookup(lookupName);
-        } catch (NamingException e) {
-            e.printStackTrace();
-        }
-        final String jndi = "java:app/MenuPro-ejb/UserSessionBean!com.menupro.business.logic.UserSessionBeanLocal";
-        try {
-            users = (UserSessionBeanLocal) new InitialContext().lookup(jndi);
-        } catch (NamingException ex) {
-            Logger.getLogger(UsersResource.class.getName()).log(Level.SEVERE, null, ex);
-        }*/
+
     }
 
-    /**
-     * Retrieves representation of an instance of com.menupro.services.rest.UsersResource
-     * @return an instance of java.lang.String
-     */
     @GET
     @Produces("application/json")
     public String getJson() {
@@ -72,14 +56,16 @@ public class UsersResource{
 
     /**
      * Adds a new user to the system, and then signs in with that account
-     * @param user the DTOUser that is going to be added
+     * @param json the DTOUser that is going to be added
      * @return token returned by signing in with the new account, error otherwise
      */
     @POST
     @Path("/addUser")
     @Consumes("application/json")
-    public String addUser(DTOUser user) {
+    public String addUser(String json) {
         try {
+            Gson gson = new GsonBuilder().create();
+            DTOUser user = gson.fromJson(json, DTOUser.class);
             users.addUser(user);
             return users.signIn(user.getUserName(), user.getPassword());
         } catch (Exception e) {
@@ -90,17 +76,16 @@ public class UsersResource{
     /**
      * Edits the active user
      * The username cannot be changed, as it is used to identify the user
-     * @param user The user to be edited
-     * @param token token of the user session, if token doesn't exists the user has to sign in again.
-     * The user can only edit its own data
+     * @param json The user to be edited
      * @return confirmation message
      */
     @POST
     @Path("/editUser")
     @Consumes("application/json")
-    public String editUser(DTOUser user, @QueryParam("token") String token) {
-        System.out.println(user.getUserName() + " " + token);
-       if (users.isLoggedIn(token, user.getUserName())) {
+    public String editUser(String json) {
+       Gson gson = new GsonBuilder().create();
+       DTOUser user = gson.fromJson(json, DTOUser.class);
+       if (users.isLoggedIn(user.getToken(), user.getUserName())) {
             try {
                 users.editUser(user);
                 return "ok";
@@ -121,7 +106,7 @@ public class UsersResource{
      */
     @DELETE
     @Path("/deleteUser")
-    public String deleteUser(@QueryParam("userName") String userName, @QueryParam("token") String token) {
+    public String deleteUser(@QueryParam("user") String userName, @QueryParam("token") String token) {
         if (users.isLoggedIn(token, userName)) {
             try {
                 users.deleteUser(userName);
@@ -144,7 +129,8 @@ public class UsersResource{
     @POST
     @Path("/addContact")
     @Consumes("application/x-www-form-urlencoded")
-    public String addContact(@FormParam("user") String user, @FormParam("contact") String contact, @FormParam("token") String token) {
+    public String addContact(@FormParam("user") String user, 
+            @FormParam("contact") String contact, @FormParam("token") String token) {
         if (users.isLoggedIn(token, user)) {
             try {
                 users.addContact(user, contact);
@@ -166,12 +152,26 @@ public class UsersResource{
     @GET
     @Path("/getUser")
     @Consumes("application/json")
-    public DTOUser getUser(@QueryParam("userName") String userName) {
+    public Response getUser(@QueryParam("user") String userName) {
         try {
-            return users.getUser(userName);
+            Gson gson = new GsonBuilder().create();
+            return Response.accepted(gson.toJson(users.getUser(userName))).build();
         } catch (Exception e) {
             e.printStackTrace();
-            return new DTOUser();
+            return Response.ok("User not found.").build();
+        }
+    }
+    
+    @GET
+    @Path("/getUsers")
+    @Consumes("application/json")
+    public Response getUsers() {
+        try {
+            Gson gson = new GsonBuilder().create();
+            return Response.accepted(gson.toJson(users.getUsers())).build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.ok("User not found.").build();
         }
     }
     
@@ -198,22 +198,6 @@ public class UsersResource{
             return e.getMessage();
         }
     }
-    /*
-    @POST
-    @Path("/signin")
-    public String signin(@QueryParam("password") String password, @QueryParam("user") String user) {
-        System.out.println(password+" y "+user);
-        try {
-            String token = users.signIn(user, password);
-            if (token.equals("")) {
-                token = "The username and password you entered don't match.";
-            }
-            return token;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return e.getMessage();
-        }
-    }*/
     
     /**
      * Sign out the user

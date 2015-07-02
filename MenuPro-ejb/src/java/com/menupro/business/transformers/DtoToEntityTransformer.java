@@ -46,7 +46,7 @@ public class DtoToEntityTransformer implements DtoToEntityTransformerLocal {
         Order order = new Order();
         order.setComments(dOrder.getComments());
         order.setDate(dOrder.getDate());
-        order.setId(dOrder.getId());
+        order.setId(dOrder.getCode());
         User newUser = this.converNormalUser(dOrder.getBuyer());
         order.setBuyer(newUser);
         for(DTOUser dUser : dOrder.getSideBuyers()){
